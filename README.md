@@ -1,1 +1,5 @@
-[dog12312.github.io](https://dog12312.github.io)
+### Website
+https://dog12312.wixsite.com/dogindustrialstudios
+
+Games
+https://dog12312.wixsite.com/dogindustrialstudios/Games
