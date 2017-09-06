@@ -1,0 +1,119 @@
+<!doctype html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name=apple-mobile-web-app-capable content=yes>
+<meta name=apple-mobile-web-app-status-bar-style content=black>
+<title>Windows 98</title>
+<link rel="shortcut icon" href="https://s-media-cache-ak0.pinimg.com/originals/1b/06/e7/1b06e7a66f20e405738db03ac3b9fe7c.png" type="image/x-icon">
+<link rel="apple-touch-icon" href="https://s-media-cache-ak0.pinimg.com/originals/1b/06/e7/1b06e7a66f20e405738db03ac3b9fe7c.png" type="image/x-icon">
+<link rel=stylesheet href=app.css>
+<div class=player></div>
+<div class=splash>
+<div>
+<img id="comp-j59wadhwimgimage" alt="" data-type="image" data-reactid=".0.$SITE_ROOT.$desktop_siteRoot.$SITE_HEADER.$centeredContent.$inlineContent.$comp-j59wmlra.$inlineContent.$comp-j59wmm35/=1$comp-j59wmm35.$inlineContent.$comp-j59wadhw.$link.0.$image" src="https://s-media-cache-ak0.pinimg.com/originals/1b/06/e7/1b06e7a66f20e405738db03ac3b9fe7c.png" style="width: 281px; height: 280px; object-fit: cover;">
+    <p>Please Wait. This May Take a While</p>
+</div></div>
+</div>
+</div>
+<div class=error>
+<div>
+  <h1>Error</h1>
+  <p>An error has occurred With this stupidly slow operating system. <a id=bug-link href=https://dog12312.wixsite.com/dogindustrialstudios/bugs>Click here</a> to find out why.</p>
+</div>
+</div>
+<script src=fonts.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js></script>
+<script src=lib/rgbcolor.js></script>
+<script src=lib/StackBlur.js></script>
+<script src=lib/canvg.js></script>
+<script src=phosphorus.js></script>
+<script>
+
+(function () {
+  'use strict';
+
+  var stage;
+  var projectId = 167848568;
+  var projectTitle = '';
+  var turbo = false;
+  var fullScreen = true;
+
+  var params = location.search.substr(1).split('&');
+  params.forEach(function(p) {
+    var parts = p.split('=');
+    if (parts.length > 1) {
+      switch (parts[0]) {
+        case 'id':
+          projectId = Number(parts[1]);
+          break;
+        case 'turbo':
+          turbo = parts[1] !== 'false';
+          break;
+        case 'full-screen':
+          fullScreen = parts[1] !== 'false';
+          break;
+      }
+    }
+  });
+
+  var splash = document.querySelector('.splash');
+  var progressBar = document.querySelector('.progress-bar');
+  var error = document.querySelector('.error');
+  var bugLink = document.querySelector('#bug-link');
+  var player = document.querySelector('.player');
+
+  var stage;
+
+  function layout() {
+    if (!stage) return;
+    var w = Math.min(window.innerWidth, window.innerHeight / .75);
+    if (!fullScreen) w = Math.min(w, 480);
+    var h = w * .75;
+    player.style.left = (window.innerWidth - w) / 2 + 'px';
+    player.style.top = (window.innerHeight - h) / 2 + 'px';
+    stage.setZoom(w / 480);
+    stage.draw();
+  }
+
+  function showError(e) {
+    error.style.display = 'table';
+    bugLink.href = 'https://dog12312.wixsite.com/dogindustrialstudios/bugs';
+    console.error(e.stack);
+  }
+
+  window.addEventListener('resize', layout);
+
+  if (P.hasTouchEvents) {
+    document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    });
+  }
+
+  var request = P.IO.loadScratchr2Project(projectId);
+
+  request.onload = function (s) {
+    splash.style.display = 'none';
+
+    stage = s;
+    layout();
+
+    s.isTurbo = turbo;
+    s.start();
+    s.triggerGreenFlag();
+
+    player.appendChild(s.root);
+    s.focus();
+    s.handleError = showError;
+  };
+  request.onerror = showError;
+  request.onprogress = function (e) {
+    progressBar.style.width = (10 + e.loaded / e.total * 90) + '%';
+  };
+
+  P.IO.loadScratchr2ProjectTitle(projectId, function(title) {
+    document.title = projectTitle = title;
+  });
+
+}());
+
+</script>
