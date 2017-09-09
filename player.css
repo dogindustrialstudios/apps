@@ -28,7 +28,7 @@
   width: 32px;
   height: 32px;
   float: right;
-  cursor: url(cursor.gif) pointer;
+  cursor: url(Cursor.cur) pointer;
   text-align: center;
   opacity: .4;
   background-image: url(icons.svg);
