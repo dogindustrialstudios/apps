@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name=apple-mobile-web-app-capable content=yes>
+<meta name=apple-mobile-web-app-status-bar-style content=black>
+<title>Xlion</title>
+<link rel="shortcut icon" href="https://static.wixstatic.com/media/e0e1a8_bb359c8b5bb147c58e24a45049a31805~mv2.png/v1/fill/w_171,h_171,al_c,usm_4.00_1.00_0.00/e0e1a8_bb359c8b5bb147c58e24a45049a31805~mv2.png" type="image/x-icon">
+<link rel="apple-touch-icon" href="https://static.wixstatic.com/media/e0e1a8_bb359c8b5bb147c58e24a45049a31805~mv2.png/v1/fill/w_171,h_171,al_c,usm_4.00_1.00_0.00/e0e1a8_bb359c8b5bb147c58e24a45049a31805~mv2.png" type="image/x-icon">
+<link rel=stylesheet href=app.css>
+<div class=player></div>
+<div class=splash>
+<div>
+    <img id="comp-j7dpdk92imgimage" alt="" data-type="image" data-reactid=".0.$SITE_ROOT.$desktop_siteRoot.$PAGES_CONTAINER.$centeredContent.$inlineContent.$SITE_PAGES.$r36l9_DESKTOP.$inlineContent.$comp-j7dpdk92.$link.0.$image" src="https://static.wixstatic.com/media/e0e1a8_3f526e8f43c24c30979ad04580f37fd9~mv2.jpg/v1/fill/w_900,h_506,al_c,q_85,usm_4.00_1.00_0.00/e0e1a8_3f526e8f43c24c30979ad04580f37fd9~mv2.webp" style="width: 600px; height: 337px; object-fit: cover;">
+    <div class=progress><div class=progress-bar></div></div>
+    <input id="launchit" type="button" name="startit" value="Crash" onclick="window.close();">
+</div>
+</div>
+<div class=error>
+<div>
+    <h1>Missing System Files</h1>
+    <p>Please try Rebooting you Computer</p>
+</div>
+</div>
+<script src=fonts.js></script>
+<script src=//cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.js></script>
+<script src=lib/rgbcolor.js></script>
+<script src=lib/StackBlur.js></script>
+<script src=lib/canvg.js></script>
+<script src=phosphorus.js></script>
+<script>
+(function () {
+  'use strict';
+  var stage;
+  var projectId = 173658809;
+  var projectTitle = '';
+  var turbo = false;
+  var fullScreen = true;
+  var params = location.search.substr(1).split('&');
+  params.forEach(function(p) {
+    var parts = p.split('=');
+    if (parts.length > 1) {
+      switch (parts[0]) {
+        case 'id':
+          projectId = Number(parts[1]);
+          break;
+        case 'turbo':
+          turbo = parts[1] !== 'false';
+          break;
+        case 'full-screen':
+          fullScreen = parts[1] !== 'false';
+          break;
+      }
+    }
+  });
+  var splash = document.querySelector('.splash');
+  var progressBar = document.querySelector('.progress-bar');
+  var error = document.querySelector('.error');
+  var bugLink = document.querySelector('#bug-link');
+  var player = document.querySelector('.player');
+  var stage;
+  function layout() {
+    if (!stage) return;
+    var w = Math.min(window.innerWidth, window.innerHeight / .75);
+    if (!fullScreen) w = Math.min(w, 480);
+    var h = w * .75;
+    player.style.left = (window.innerWidth - w) / 2 + 'px';
+    player.style.top = (window.innerHeight - h) / 2 + 'px';
+    stage.setZoom(w / 480);
+    stage.draw();
+  }
+  function showError(e) {
+    error.style.display = 'table';
+    bugLink.href = 'https://dog12312.wixsite.com/dogindustrialstudios/bugs';
+    console.error(e.stack);
+  }
+  window.addEventListener('resize', layout);
+  if (P.hasTouchEvents) {
+    document.addEventListener('touchmove', function(e) {
+      e.preventDefault();
+    });
+  }
+  var request = P.IO.loadScratchr2Project(projectId);
+  request.onload = function (s) {
+    splash.style.display = 'none';
+    stage = s;
+    layout();
+    s.isTurbo = turbo;
+    s.start();
+    s.triggerGreenFlag();
+    player.appendChild(s.root);
+    s.focus();
+    s.handleError = showError;
+  };
+  request.onerror = showError;
+  request.onprogress = function (e) {
+    progressBar.style.width = (10 + e.loaded / e.total * 90) + '%';
+  };
+  P.IO.loadScratchr2ProjectTitle(projectId, function(title) {
+    document.title = projectTitle = title;
+  });
+}());
+</script>
